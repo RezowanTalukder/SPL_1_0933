@@ -1,0 +1,1431 @@
+#include <iostream>
+#include <sstream>
+#include <fstream>
+
+#include <bitset>
+#include <string>
+#include <unordered_map>
+
+#define MAX_DEF 4096
+
+using namespace std;
+
+string convert_int_to_bin(int number)
+{
+    string result = bitset<6>(number).to_string();
+    cout<<result ;
+    return result;
+}
+
+Stack Overflow
+Questions
+Developer Jobs
+Tags
+Users
+
+Search…
+ 
+Log In Sign Up
+Join Stack Overflow to learn, share knowledge, and build your career.
+
+Email Sign Up
+OR SIGN IN WITH
+ Google
+ Facebook
+Reading and writing from and to the same file in Java
+Ask Question
+
+up vote
+8
+down vote
+favorite
+2
+I want to read from  criteria.txt file, to tokenize and append at the end of the same file the tokens. The program throws an exception: No file found! I do not know where my mistake is. Any suggestion would help me. Thank you in advance!
+
+Here is my code:
+
+import java.io.*;
+import java.util.StringTokenizer;
+
+public class Test
+{
+    private FileReader fr;
+    private BufferedReader br;
+    private FileWriter fw;
+    private BufferedWriter bw;
+    private StringTokenizer strtok;
+    private String s;
+
+    //constructor
+    public Test()  
+    {
+        try
+        {
+            fw=new FileWriter("criteria.txt", true);
+            bw=new BufferedWriter(fw);
+
+            try
+            {
+                fr=new FileReader("criteria.txt");
+                br=new BufferedReader(fr);
+
+                while((s=br.readLine())!=null)
+                {
+                    strtok=new StringTokenizer(s," ");
+                    while(strtok.hasMoreTokens())
+                    {
+                        bw.write("\n"+strtok.nextToken());
+                    }
+                    br.close();
+                }
+            }
+            catch(FileNotFoundException e)
+            {
+                System.out.println("File was not found!");
+            }
+            catch(IOException e)    
+            {
+                System.out.println("No file found!");
+            }
+
+            bw.close();
+        }
+        catch(FileNotFoundException e)
+        {
+            System.out.println("Error1!");
+        }
+        catch(IOException e)    
+        {
+            System.out.println("Error2!");
+        }
+    }   
+
+    public static void main(String[] args) 
+    {
+        Test t=new Test();
+    }
+}
+java file-io
+shareimprove this question
+edited Oct 3 '12 at 17:15
+
+Brian
+11.9k12754
+asked Oct 3 '12 at 16:57
+
+Lavinia
+1081214
+1
+If you are using Eclipse, the file needs to be in the root directory of the project. – Chris Dargis Oct 3 '12 at 16:58
+3
+You should print the stack trace in order to find the offending line of code. – Vulcan Oct 3 '12 at 16:59
+check your files directory – Abubakkar Oct 3 '12 at 17:00
+@Doug Ramsey It is in the root directory of the project. – Lavinia Oct 3 '12 at 17:02
+Instead of just "criteria.txt", put the actual location of the file on the filesystem like "E:\\criteria.txt". – Bhesh Gurung Oct 3 '12 at 17:13 
+show 3 more comments
+3 Answers
+active oldest votes
+up vote
+8
+down vote
+accepted
+You need to close your reader after you have finished reading the file i.e. after the while loop. Currently, you are closing it after reading the first line, which causes an "IOException: Stream closed" when it tries to read the second line.
+
+Change to:
+
+while((s=br.readLine())!=null)
+{
+    strtok=new StringTokenizer(s," ");
+    while(strtok.hasMoreTokens())
+    {
+        bw.write("\n"+strtok.nextToken());
+    }
+    //br.close(); <----- move this to outside the while loop
+}
+br.close();
+shareimprove this answer
+answered Oct 3 '12 at 17:14
+
+dogbane
+170k52299357
+Thank you! It is working now. – Lavinia Oct 3 '12 at 17:30
+add a comment
+
+up vote
+1
+down vote
+Your greatest undoing is placing the br.close(); inside the while() loop: You are telling the computer each time it writes to the file to close it immediately, hence the file remained closed and computer will never find it during the next iteration/ execution of the loop. However, I have edit the initial program to this:
+
+import java.io.*;
+import java.util.StringTokenizer;
+
+public class Test
+{
+    private FileReader fr;
+    private BufferedReader br;
+    private FileWriter fw;
+    private BufferedWriter bw;
+    private StringTokenizer strtok;
+    private String s;
+
+    //constructor
+    public Test()  
+    {
+        try
+        {
+            fw=new FileWriter("criteria.txt", true);
+            bw=new BufferedWriter(fw);
+
+            try
+            {
+                fr=new FileReader("criteria.txt");
+                br=new BufferedReader(fr);
+
+                **while((s=br.readLine())!=null)
+                {
+                    strtok=new StringTokenizer(s," ");
+                    while(strtok.hasMoreTokens())
+                    {
+                        bw.write("\n"+strtok.nextToken());
+                    }
+
+                }
+                     br.close();
+            }**
+            catch(FileNotFoundException e)
+            {
+                System.out.println("File was not found!");
+            }
+            catch(IOException e)    
+            {
+
+Work Here
+Legal
+Privacy Policy
+Contact Us
+STACK EXCHANGE
+NETWORK
+Technology
+Life / Arts
+Culture / Recreation
+Science
+Other
+Blog Facebook Twitter LinkedIn
+site design / logo © 2018 Stack Exchange Inc; user contributions licensed under cc by-sa 3.0 with attribution required. rev 2018.2.25.29140
+
+ 
+
+void compress(string input, int size, string filename) {
+    unordered_map<string, int> compress_dictionary(MAX_DEF);
+    //Dictionary initializing with ASCII
+    for ( int unsigned i = 0 ; i < 256 ; i++ ){
+        compress_dictionary[string(1,i)] = i;
+    }
+    string current_string;
+    unsigned
+static void show_usage()
+{
+        cerr << "Usage: \n"
+              << "Specify the file that needs to be compressed or decompressed\n"
+              <<"lzw -c input    #compress file input\n"
+              <<"lzw -d input    #decompress file input\n"
+              <<"Compressed data will be found in a file with the same name but with a .lzw extension\n"
+              <<"Decompressed data can be found in a file with the same name and a _uncompressed.txt extension\n"
+              << endl;
+}
+
+
+int main () {
+
+    int a = 10 ;
+    convert_int_to_bin(a) ;
+
+
+
+    streampos size;
+    char * memblock;
+
+    if (argc <2)
+    {
+        show_usage();
+        return(1);
+    }
+    ifstream file (argv[2], ios::in|ios::binary|ios::ate);
+    if (file.is_open())
+    {
+        size = file.tellg();
+        memblock = new char[size];
+        file.seekg (0, ios::beg);
+        file.read (memblock, size);
+        file.close();
+        string input = convert_char_to_string(memblock,size);
+        if (string( "-c" ) == argv[1] )
+            compress(input,size, argv[2]);
+        else if (string( "-d" ) == argv[1] )
+            decompress(input,size, argv[2]);
+        else
+            show_usage();
+    }
+  int code;
+    unsigned int next_code = 256;
+    //Output file for compressed data
+    ofstream outputFile;
+    outputFile.open(filename + ".rez1");
+
+    for(char& c: input){
+    current_string = current_string + c;
+    if ( compress_dictionary.find(current_string) ==compress_dictionary.end() ){
+            if (next_code <= MAX_DEF)
+                compress_dictionary.insert(make_pair(current_string, next_code++));
+                current_string.erase(current_string.size()-1);
+                outputFile << convert_int_to_bin(compress_dictionary[current_string]);
+                current_string = c ;
+        }
+    }
+    if (current_string.size())
+            outputFile << convert_int_to_bin(compress_dictionary[current_string]);
+    outputFile.close();
+}
+
+
+
+void decompress(string input, int size, string filename) {
+    unordered_map<unsigned int, string> dictionary(MAX_DEF);
+    //Dictionary initializing with ASCII
+    for ( int unsigned i = 0 ; i < 256 ; i++ ){
+            dictionary[i] = string(1,i);
+    }
+    string previous_string;
+    unsigned int code;
+    unsigned int next_code = 256;
+    //Output file for decompressed data
+    ofstream outputFile;
+    outputFile.open(filename + "_uncompressed.txt");
+
+    int i =0;
+    while (i<size){
+        //Extracting 12 bits and converting binary to decimal
+        string subinput = input.substr(i,12);
+        bitset<12> binary(subinput);
+        code = binary.to_ullong();
+        i+=12;
+    for(char& c: input){
+    current_string = current_string + c;
+    if ( compress_dictionary.find(current_string) ==compress_dictionary.end() ){
+            if (next_code <= MAX_DEF)
+                compress_dictionary.insert(make_pair(current_string, next_code++));
+                current_string.erase(current_string.size()-1);
+                outputFile << convert_int_to_bin(compress_dictionary[current_string]);
+                current_string = c ;
+        }
+    }
+    if (current_string.size())
+            outputFile << convert_int_to_bin(compress_dictionary[current_string]);
+    outputFile.close();
+}
+
+
+static void show_usage()
+{
+        cerr << "Usage: \n"
+              << "Specify the file that needs to be compressed or decompressed\n"
+              <<"lzw -c input    #compress file input\n"
+              <<"lzw -d input    #decompress file input\n"
+              <<"Compressed data will be found in a file with the same name but with a .lzw extension\n"
+              <<"Decompressed data can be found in a file with the same name and a _uncompressed.txt extension\n"
+              << endl;
+}
+
+
+        if ( dictionary.find(code) ==dictionary.end() )
+            dictionary.insert(make_pair(code,(previous_string + previous_string.substr(0,1))));
+        outputFile<<dictionary[code];
+        if ( previous_string.size())
+            dictionary.insert(make_pair(next_code++,previous_string + dictionary[code][0]));
+        previous_string = dictionary[code];
+        }
+    outputFile.close();
+}
+
+string convert_char_to_string(const char *pCh, int arraySize){
+    string str;
+    if (pCh[arraySize-1] == '\0') str.append(pCh);
+    else for(int i=0; i<arraySize; i++) str.append(1,pCh[i]);
+    return str;
+}                System.out.println("No file found!");
+            }
+            bw.close();
+        }
+        catch(FileNotFoundException e)
+        {
+            System.out.println("Error1!");
+        }
+        catch(IOException e)    
+        {
+            System.out.println("Error2!");
+        }
+    }   
+
+    public static void main(String[] args) 
+    {
+        Test t=new Test();
+    }
+}
+The folder or directory the file exist doesn't matter in this case as the program will create a new file named "criteria.txt" in the same folder as the java program; however, you will have to open the file with a text editor to add/ append some data as the file will be blank initially. Subsequent run of the program will now append the already inserted content(s) as a concatenation string on a new line. A new line will be produced each time the program is run. Hope this helps.
+
+shareimprove this answer
+edited Jul 13 '16 at 7:43
+
+Alex Weitz
+1,09621123
+answered Oct 13 '12 at 0:15
+
+Morufu Salawu
+7917
+add a comment
+up vote
+0
+down vote
+In my opinion you can't do that. You can't open the same file to read and write at the same time. You have to open and save the file information in a data structure and then close it. Then you have to work with the data structure in memory and open the file to write results. And when you finish to write you should close it.
+
+shareimprove this answer
+answered Oct 3 '12 at 21:51
+
+Dranste
+587
+add a comment
+Your Answer
+
+ 
+Sign up or log in
+ Sign up using Google
+ Sign up using Facebook
+ Sign up using Email and Password
+ 
+Post as a guest
+Name
+
+Email
+
+required, but never shown
+By posting your answer, you agree to the privacy policy and terms of service.
+
+Not the answer you're looking for? Browse other questions tagged java file-io or ask your own question.
+asked
+
+5 years, 4 months ago
+
+viewed
+
+21,024 times
+
+active
+
+1 year, 7 months ago
+
+Want a c++ job?
+C++ experts for cryptocurrency projects -- all time zones
+Core DataNo office location
+REMOTE
+c++mongodb
+Studenten (m/w) für die Softwareentwicklung Java/C++
+IVU Traffic Technologies AGBerlin, Deutschland
+c++java
+Software Developer
+Solar Technology Inc.No office location
+$50K - $75KREMOTE
+javac++
+Senior Robotics Developer / Specialist / Researcher
+Aeolus RoboticsSouth San Francisco, CA
+REMOTE
+c++c
+33 People Chatting
+JavaScript
+1 hour ago - ShrekOverflow
+ShrekOverflow: 1 hour agoSterling Archer: 1 hour agohsimah: 2 hours agondugger: 2 hours agoLeroy: 2 hours agoMeredith: 2 hours agoKendall Frey: 2 hours ago
+SO Close Vote Reviewers
+1 hour ago - Makyen
+Makyen: 1 hour agoKen White: 1 hour agoJohn Dvorak: 1 hour agoSam: 1 hour agoNkosi: 2 hours agoTylerH: 3 hours agoFireAlarm: 3 hours ago
+Linked
+3
+Opencsv + add new column to existing csv
+Related
+5084
+Is Java “pass-by-reference” or “pass-by-value”?
+1469
+Create Excel (.XLS and .XLSX) file from C#
+2777
+Create ArrayList from array
+3017
+Read/convert an InputStream to a String
+1135
+How do I create a Java string from the contents of a file?
+2253
+How do I tell if a regular file does not exist in Bash?
+2242
+Find and restore a deleted file in a Git repository
+1030
+How do I create a file and write to it in Java?
+751
+Reading a plain text file in Java
+2472
+Creating a memory leak with Java
+Hot Network Questions
+How to politely notify in an online conversation that I am a woman?
+Can we use ' 's ' with the names of the cities or towns?
+What is the most heated exoatmospheric conflict to-date?
+Sum of cube roots of complex conjugates
+NGINX Not Resolving Domains
+Do these pictures depict the same man after two separate crises?
+Properly using separate tabs with Arduino IDE
+Can a monster cause a PC's alignment to change?
+Are one-point sets always compact in any topological spaces?
+Want to overlay a density plot with a grid of graphics
+What is the behavior of `getopts` when it meets `--`?
+Were there inns and hostels in medieval Europe?
+Locking up around workmen
+Readability versus maintainability, special case of writing nested function calls
+Movie about an alien/monster in Antarctica?
+Insert some lines before a specific line with sed
+Allegations of harassment by a faculty member and reporting?
+Are we doing something horribly wrong security-wise? Is there a better way to handle passwords?
+How to politely decline painting requests from co-workers?
+What is the function of \kern\z@ in the definition of \dotfill?
+Short circuited an AC outlet. After resetting breaker, outlets wires have no current
+Router benefits in 2018 compared to a L3 Switch
+Why does the Death Star have a trash compactor?
+What does "approach zero" really mean?
+ question feed
+STACK OVERFLOW
+Questions
+Jobs
+Developer Jobs Directory
+Salary Calculator
+Help
+Mobile
+STACK OVERFLOW
+BUSINESS
+Talent
+Ads
+Enterprise
+COMPANY
+About
+Press
+void compress(string input, int size, string filename) {
+    unordered_map<string, int> compress_dictionary(MAX_DEF);
+    //Dictionary initializing with ASCII
+    for ( int unsigned i = 0 ; i < 256 ; i++ ){
+        compress_dictionary[string(1,i)] = i;
+    }
+    string current_string;
+    unsigned
+static void show_usage()
+{
+        cerr << "Usage: \n"
+              << "Specify the file that needs to be compressed or decompressed\n"
+              <<"lzw -c input    #compress file input\n"
+              <<"lzw -d input    #decompress file input\n"
+              <<"Compressed data will be found in a file with the same name but with a .lzw extension\n"
+              <<"Decompressed data can be found in a file with the same name and a _uncompressed.txt extension\n"
+              << endl;
+}
+
+
+int main () {
+
+    int a = 10 ;
+    convert_int_to_bin(a) ;
+
+
+
+    streampos size;
+    char * memblock;
+
+    if (argc <2)
+    {
+        show_usage();
+        return(1);
+    }
+    ifstream file (argv[2], ios::in|ios::binary|ios::ate);
+    if (file.is_open())
+    {
+        size = file.tellg();
+        memblock = new char[size];
+        file.seekg (0, ios::beg);
+        file.read (memblock, size);
+        file.close();
+        string input = convert_char_to_string(memblock,size);
+        if (string( "-c" ) == argv[1] )
+            compress(input,size, argv[2]);
+        else if (string( "-d" ) == argv[1] )
+            decompress(input,size, argv[2]);
+        else
+            show_usage();
+    }
+  int code;
+    unsigned int next_code = 256;
+    //Output file for compressed data
+    ofstream outputFile;
+    outputFile.open(filename + ".rez1");
+
+    for(char& c: input){
+    current_string = current_string + c;
+    if ( compress_dictionary.find(current_string) ==compress_dictionary.end() ){
+            if (next_code <= MAX_DEF)
+                compress_dictionary.insert(make_pair(current_string, next_code++));
+                current_string.erase(current_string.size()-1);
+                outputFile << convert_int_to_bin(compress_dictionary[current_string]);
+                current_string = c ;
+        }
+    }
+    if (current_string.size())
+            outputFile << convert_int_to_bin(compress_dictionary[current_string]);
+    outputFile.close();
+}
+
+
+static void show_usage()
+{
+        cerr << "Usage: \n"
+              << "Specify the file that needs to be compressed or decompressed\n"
+              <<"lzw -c input    #compress file input\n"
+              <<"lzw -d input    #decompress file input\n"
+              <<"Compressed data will be found in a file with the same name but with a .lzw extension\n"
+              <<"Decompressed data can be found in a file with the same name and a _uncompressed.txt extension\n"
+              << endl;
+}
+
+
+int main () {
+
+    int a = 10 ;
+    convert_int_to_bin(a) ;
+
+
+
+    streampos size;
+    char * memblock;
+
+    if (argc <2)
+    {
+        show_usage();
+        return(1);
+    }
+    ifstream file (argv[2], ios::in|ios::binary|ios::ate);
+    if (file.is_open())
+    {
+        size = file.tellg();
+        memblock = new char[size];
+        file.seekg (0, ios::beg);
+        file.read (memblock, size);
+        file.close();
+        string input = convert_char_to_string(memblock,size);
+        if (string( "-c" ) == argv[1] )
+            compress(input,size, argv[2]);
+        else if (string( "-d" ) == argv[1] )
+            decompress(input,size, argv[2]);
+        else#include <iostream>
+#include <sstream>
+#include <fstream>
+
+#include <bitset>
+#include <string>
+#include <unordered_map>
+
+#define MAX_DEF 4096
+
+using namespace std;
+
+string convert_int_to_bin(int number)
+{
+    string result = bitset<6>(number).to_string();
+    cout<<result ;
+    return result;
+}
+
+void compress(string input, int size, string filename) {
+    unordered_map<string, int> compress_dictionary(MAX_DEF);
+    //Dictionary initializing with ASCII
+    for ( int unsigned i = 0 ; i < 256 ; i++ ){
+        compress_dictionary[string(1,i)] = i;
+    }
+    string current_string;
+    unsigned int code;
+    unsigned int next_code = 256;
+    //Output file for compressed data
+    ofstream outputFile;
+    outputFile.open(filename + ".rez1");
+
+    for(char& c: input){
+    current_string = current_string + c;
+    if ( compress_dictionary.find(current_string) ==compress_dictionary.end() ){
+            if (next_code <= MAX_DEF)
+                compress_dictionary.insert(make_pair(current_string, next_code++));
+                current_string.erase(current_string.size()-1);
+                outputFile << convert_int_to_bin(compress_dictionary[current_string]);
+                current_string = c ;
+        }
+    }
+    if (current_string.size())
+            outputFile << convert_int_to_bin(compress_dictionary[current_string]);
+    outputFile.close();
+}
+
+
+
+void decompress(string input, int size, string filename) {
+    unordered_map<unsigned int, string> dictionary(MAX_DEF);
+    //Dictionary initializing with ASCII
+    for ( int unsigned i = 0 ; i < 256 ; i++ ){
+            dictionary[i] = string(1,i);
+    }
+    string previous_string;
+    unsigned int code;
+    unsigned int next_code = 256;
+    //Output file for decompressed data
+    ofstream outputFile;
+    outputFile.open(filename + "_uncompressed.txt");
+
+    int i =0;
+    while (i<size){
+        //Extracting 12 bits and converting binary to decimal
+        string subinput = input.substr(i,12);
+        bitset<12> binary(subinput);
+        code = binary.to_ullong();
+        i+=12;
+
+        if ( dictionary.find(code) ==dictionary.end() )
+            dictionary.insert(make_pair(code,(previous_string + previous_string.substr(0,1))));
+        outputFile<<dictionary[code];
+        if ( previous_string.size())
+            dictionary.insert(make_pair(next_code++,previous_string + dictionary[code][0]));
+        previous_string = dictionary[code];
+        }
+    outputFile.close();
+}
+
+string convert_char_to_string(const char *pCh, int arraySize){
+    string str;
+    if (pCh[arraySize-1] == '\0') str.append(pCh);
+    else for(int i=0; i<arraySize; i++) str.append(1,pCh[i]);
+    return str;
+}
+
+static void show_usage()
+{
+        cerr << "Usage: \n"
+              << "Specify the file that needs to be compressed or decompressed\n"
+              <<"lzw -c input    #compress file input\n"
+              <<"lzw -d input    #decompress file input\n"
+              <<"Compressed data will be found in a file with the same name but with a .lzw extension\n"
+              <<"Decompressed data can be found in a file with the same name and a _uncompressed.txt extension\n"
+              << endl;
+}
+
+
+int main () {
+
+    int a = 10 ;
+    convert_int_to_bin(a) ;
+
+
+
+    streampos size;
+    char * memblock;
+
+    if (argc <2)
+    {
+        show_usage();
+        return(1);
+    }
+    ifstream file (argv[2], ios::in|ios::binary|ios::ate);
+    if (file.is_open())
+    {
+        size = file.tellg();
+        memblock = new char[size];
+        file.seekg (0, ios::beg);
+        file.read (memblock, size);
+        file.close();
+        string input = convert_char_to_string(memblock,size);
+        if (string( "-c" ) == argv[1] )
+            compre#include <iostream>
+#include <sstream>
+#include <fstream>
+
+#include <bitset>
+#include <string>
+#include <unordered_map>
+
+#define MAX_DEF 4096
+
+using namespace std;
+
+string convert_int_to_bin(int number)
+{
+    string result = bitset<6>(number).to_string();
+    cout<<result ;
+    return result;
+}
+
+void compress(string input, int size, string filename) {
+    unordered_map<string, int> compress_dictionary(MAX_DEF);
+    //Dictionary initializing with ASCII
+    for ( int unsigned i = 0 ; i < 256 ; i++ ){
+        compress_dictionary[string(1,i)] = i;
+    }
+    string current_string;
+    unsigned int code;
+    unsigned int next_code = 256;
+    //Output file for compressed data
+    ofstream outputFile;
+    outputFile.open(filename + ".rez1");
+
+Create ArrayList from array
+3017
+Read/convert an InputStream to a String
+1135
+How do I create a Java string from the contents of a file?
+2253
+How do I tell if a regular file does not exist in Bash?
+2242
+Find and restore a deleted file in a Git repository
+1030
+How do I create a file and write to it in Java?
+751
+Reading a plain text file in Java
+2472
+Creating a memory leak with Java
+Hot Network Questions
+How to politely notify in an online conversation that I am a woman?
+Can we use ' 's ' with the names of the cities or towns?
+What is the most heated exoatmospheric conflict to-date?
+Sum of cube roots of complex conjugates
+NGINX Not Resolving Domains
+Do these pictures depict the same man after two separate crises?
+Properly using separate tabs with Arduino IDE
+Can a monster cause a PC's alignment to change?
+Are one-point sets always compact in any topological spaces?
+Want to overlay a density plot with a grid of graphics
+What is the behavior of `getopts` when it meets `--`?
+Were there inns and hostels in medieval Europe?
+Locking up around workmen
+Readability versus maintainability, special case of writing nested function calls
+Movie about an alien/monster in Antarctica?
+Insert some lines before a specific line with sed
+Allegations of harassment by a faculty member and reporting?
+Are we doing something horribly wrong security-wise? Is there a better way to handle passwords?
+How to politely decline painting requests from co-workers?
+What is the function of \kern\z@ in the definition of \dotfill?
+Short circuited an AC outlet. After resetting breaker, outlets wires have no current
+Router benefits in 2018 compared to a L3 Switch
+Why does the Death Star have a trash compactor?
+What does "approach zero" really mean?
+ question feed
+STACK OVERFLOW
+Questions
+Jobs
+Developer Jobs Directory
+Salary Calculator
+Help
+Mobile
+STACK OVERFLOW
+BUSINESS
+Talent
+Ads
+Enterprise
+COMPANY
+About
+Press
+void compress(string input, int size, string filename) {
+    unordered_map<string, int> compress_dictionary(MAX_DEF);
+    //Dictionary initializing with ASCII
+    for ( int unsigned i = 0 ; i < 256 ; i++ ){
+        compress_dictionary[string(1,i)] = i;
+    }
+    string current_string;
+    unsigned
+static void show_usage()
+{
+        cerr << "Usage: \n"
+              << "Specify the file that needs to be compressed or decompressed\n"
+              <<"lzw -c input    #compress file input\n"
+              <<"lzw -d input    #decompress file input\n"
+              <<"Compressed data will be found in a file with the same name but with a .lzw extension\n"
+              <<"Decompressed data can be found in a file with the same name and a _uncompressed.txt extension\n"
+              << endl;
+}
+
+
+int main () {
+
+    int a = 10 ;
+    convert_int_to_bin(a) ;
+
+
+
+    streampos size;
+    char * memblock;
+
+    if (argc <2)
+    {
+        show_usage();
+        return(1);
+    }
+    ifstream file (argv[2], ios::in|ios::binary|ios::ate);
+    if (file.is_open())
+    {
+        size = file.tellg();
+        memblock = new char[size];
+        file.seekg (0, ios::beg);
+        file.read (memblock, size);
+        file.close();
+        string input = convert_char_to_string(memblock,size);
+        if (string( "-c" ) == argv[1] )
+            compress(input,size, argv[2]);
+        else if (string( "-d" ) == argv[1] )
+            decompress(input,size, argv[2]);
+        else
+            show_usage();
+    }
+  int code;
+    unsigned int next_code = 256;
+    //Output file for compressed data
+    ofstream outputFile;
+    outputFile.open(filename + ".rez1");
+
+    for(char& c: input){
+    current_string = current_string + c;
+    if ( compress_dictionary.find(current_string) ==compress_dictionary.end() ){
+            if (next_code <= MAX_DEF)
+                compress_dictionary.insert(make_pair(current_string, next_code++));
+                current_string.erase(current_string.size()-1);
+                outputFile << convert_int_to_bin(compress_dictionary[current_string]);
+                current_string = c ;
+        }
+    }
+    if (current_string.size())
+            outputFile << convert_int_to_bin(compress_dictionary[current_string]);
+    outputFile.close();
+}
+
+
+static void show_usage()
+{
+        cerr << "Usage: \n"
+              << "Specify the file that needs to be compressed or decompressed\n"
+              <<"lzw -c input    #compress file input\n"
+              <<"lzw -d input    #decompress file input\n"
+              <<"Compressed data will be found in a file with the same name but with a .lzw extension\n"
+              <<"Decompressed data can be found in a file with the same name and a _uncompressed.txt extension\n"
+              << endl;
+}
+
+
+int main () {
+
+    int a = 10 ;
+    convert_int_to_bin(a) ;
+
+
+
+    streampos size;
+    char * memblock;
+
+    if (argc <2)
+    {
+        show_usage();
+        return(1);
+    }
+    ifstream file (argv[2], ios::in|ios::binary|ios::ate);
+    if (file.is_open())
+    {
+        size = file.tellg();
+        memblock = new char[size];
+        file.seekg (0, ios::beg);
+        file.read (memblock, size);
+        file.close();
+        string input = convert_char_to_string(memblock,size);
+        if (string( "-c" ) == argv[1] )
+            compress(input,size
+    for(char& c: input){
+    current_string = current_string + c;
+    if ( compress_dictionary.find(current_string) ==compress_dictionary.end() ){
+            if (next_code <= MAX_DEF)
+                compress_dictionary.insert(make_pair(current_string, next_code++));
+                current_string.erase(current_string.size()-1);
+                outputFile << convert_int_to_bin(compress_dictionary[current_string]);
+                current_string = c ;
+        }
+    }
+    if (current_string.size())
+            outputFile << convert_int_to_bin(compress_dictionary[current_string]);
+    outputFile.close();
+}
+
+
+
+void decompress(string input, int size, string filename) {
+    unordered_map<unsigned int, string> dictionary(MAX_DEF);
+    //Dictionary initializing with ASCII
+    for ( int unsigned i = 0 ; i < 256 ; i++ ){
+            dictionary[i] = string(1,i);
+    }
+    string previous_string;
+    unsigned int code;
+    unsigned int next_code = 256;
+    //Output file for decompressed data
+    ofstream outputFile;
+    outputFile.open(filename + "_uncompressed.txt");
+
+    int i =0;
+    while (i<size){
+        //Extracting 12 bits and converting binary to decimal
+        string subinput = input.substr(i,12);
+        bitset<12> binary(subinput);
+        code = binary.to_ullong();
+        i+=12;
+
+        if ( dictionary.find(code) ==dictionary.end() )
+            dictionary.insert(make_pair(code,(previous_string + previous_string.substr(0,1))));
+        outputFile<<dictionary[code];
+        if ( previous_string.size())
+            dictionary.insert(make_pair(next_code++,previous_string + dictionary[code][0]));
+        previous_string = dictionary[code];
+        }
+    outputFile.close();
+}
+
+string convert_char_to_string(const char *pCh, int arraySize){
+    string str;
+    if (pCh[arraySize-1] == '\0') str.append(pCh);
+    else for(int i=0; i<arraySize; i++) str.append(1,pCh[i]);
+    return str;
+}
+
+static void show_usage()
+{
+        cerr << "Usage: \n"
+              << "Specify the file that needs to be compressed or decompressed\n"
+              <<"lzw -c input    #compress file input\n"
+              <<"lzw -d input    #decompress file input\n"
+              <<"Compressed data will be found in a file with the same name but with a .lzw extension\n"
+              <<"Decompressed data can be found in a file with the same name and a _uncompressed.txt extension\n"
+              << endl;
+}
+
+
+int main () {
+
+    int a = 10 ;
+    convert_int_to_bin(a) ;
+
+
+
+    streampos size;
+    char * memblock;
+
+    if (argc <2)
+    {
+        show_usage();
+        return(1);
+    }
+    ifstream file (argv[2], ios::in|ios::binary|ios::ate);
+    if (file.is_open())
+    {
+        size = file.tellg();
+        memblock = new char[size];
+        file.seekg (0, ios::beg);
+        file.read (memblock, size);
+        file.close();
+        string input = convert_char_to_string(memblock,size);
+        if (string( "-c" ) == argv[1] )
+            compress(input,size, argv[2]);
+        else if (string( "-d" ) == argv[1] )
+            decompress(input,size, argv[2]);
+        else
+            show_usage();
+    }
+    else {
+    cout << "Unable to open file."<<endl;
+    show_usage();
+    }
+
+
+
+    return 0;
+}
+#include <iostream>
+#include <sstream>
+#include <fstream>
+
+#include <bitset>
+#include <string>
+#include <unordered_map>
+
+#define MAX_DEF 4096
+
+using namespace std;
+
+string convert_int_to_bin(int number)
+{
+    string result = bitset<6>(number).to_string();
+    cout<<result ;
+    return result;
+}
+
+void compress(string input, int size, string filename) {
+    unordered_map<string, int> compress_dictionary(MAX_DEF);
+    //Dictionary initializing with ASCII
+    for ( int unsigned i = 0 ; i < 256 ; i++ ){
+        compress_dictionary[string(1,i)] = i;
+    }
+    string current_string;
+    unsigned int code;
+    unsigned int next_code = 256;
+    //Output file for compressed data
+    ofstream outputFile;
+    outputFile.open(filename + ".rez1");
+
+    for(char& c: input){
+    current_string = current_string + c;
+    if ( compress_dictionary.find(current_string) ==compress_dictionary.end() ){
+            if (next_code <= MAX_DEF)
+                compress_dictionary.insert(make_pair(current_string, next_code++));
+                current_string.erase(current_string.size()-1);
+                outputFile << convert_int_to_bin(compress_dictionary[current_string]);
+                current_string = c ;
+        }
+    }
+    if (current_string.size())
+            outputFile << convert_int_to_bin(compress_dictionary[current_string]);
+    outputFile.close();
+}
+
+
+
+void decompress(string input, int size, string filename) {
+    unordered_map<unsigned int, string> dictionary(MAX_DEF);
+    //Dictionary initializing with ASCII
+    for ( int unsigned i = 0 ; i < 256 ; i++ ){
+            dictionary[i] = string(1,i);
+    }
+    string previous_string;
+    unsigned int code;
+    unsigned int next_code = 256;
+    //Output file for decompressed data
+    ofstream outputFile;
+    outputFile.open(filename + "_uncompressed.txt");
+
+    int i =0;
+    while (i<size){
+        //Extracting 12 bits and converting binary to decimal
+        string subinput = input.substr(i,12);
+        bitset<12> binary(subinput);
+        code = binary.to_ullong();
+        i+=12;
+
+        if ( dictionary.find(code) ==dictionary.end() )
+            dictionary.insert(make_pair(code,(previous_string + previous_string.substr(0,1))));
+        outputFile<<dictionary[code];
+        if ( previous_string.size())
+            dictionary.insert(make_pair(next_code++,previous_string + dictionary[code][0]));
+        previous_string = dictionary[code];
+        }
+    outputFile.close();
+}
+
+string convert_char_to_string(const char *pCh, int arraySize){
+    string str;
+    if (pCh[arraySize-1] == '\0') str.append(pCh);
+    else for(int i=0; i<arraySize; i++) str.append(1,pCh[i]);
+    return str;
+}
+
+static void show_usage()
+{
+        cerr << "Usage: \n"
+              << "Specify the file that needs to be compressed or decompressed\n"
+              <<"lzw -c input    #compress file input\n"
+              <<"lzw -d input    #decompress file input\n"
+              <<"Compressed data will be found in a file with the same name but with a .lzw extension\n"
+              <<"Decompressed data can be found in a file with the same name and a _uncompressed.txt extension\n"
+              << endl;
+}
+
+
+int main () {
+
+    int a = 10 ;
+    convert_int_to_bin(a) ;
+
+
+
+    streampos size;
+    char * memblock;
+
+    if (argc <2)
+    {
+        show_usage();
+        return(1);
+    }
+    ifstream file (argv[2], ios::in|ios::binary|ios::ate);
+    if (file.is_open())
+    {
+        size = file.tellg();
+        memblock = new char[size];
+        file.seekg (0, ios::beg);
+        file.read (memblock, size);
+        file.close();
+        string input = convert_char_to_string(memblock,size);
+        if (string( "-c" ) == argv[1] )
+            compress(input,size, argv[2]);
+        else if (string( "-d" ) == argv[1] )
+            decompress(input,size, argv[2]);
+        else
+            show_usage();
+    }
+    else {
+    cout << "Unable to open file."<<endl;
+    show_usage();
+    }
+
+
+
+    return 0;
+}
+#include <iostream>
+#include <sstream>
+#include <fstream>
+
+#include <bitset>
+#include <string>
+#include <unordered_map>
+
+#define MAX_DEF 4096
+
+using namespace std;
+
+string convert_int_to_bin(int number)
+{
+    string result = bitset<6>(number).to_string();
+    cout<<result ;
+    return result;
+}
+
+void compress(string input, int size, string filename) {
+    unordered_map<string, int> compress_dictionary(MAX_DEF);
+    //Dictionary initializing with ASCII
+    for ( int unsigned i = 0 ; i < 256 ; i++ ){
+        compress_dictionary[string(1,i)] = i;
+    }
+    string current_string;
+    unsigned int code;
+    unsigned int next_code = 256;
+    //Output file for compressed data
+    ofstream outputFile;
+    outputFile.open(filename + ".rez1");
+
+    for(char& c: input){
+    current_string = current_string + c;
+    if ( compress_dictionary.find(current_string) ==compress_dictionary.end() ){
+            if (next_code <= MAX_DEF)
+                compress_dictionary.insert(make_pair(current_string, next_code++));
+                current_string.erase(current_string.size()-1);
+                outputFile << convert_int_to_bin(compress_dictionary[current_string]);
+                current_string = c ;
+        }
+    }
+    if (current_string.size())
+            outputFile << convert_int_to_bin(compress_dictionary[current_string]);
+    outputFile.close();
+}
+
+
+
+void decompress(string input, int size, string filename) {
+    unordered_map<unsigned int, string> dictionary(MAX_DEF);
+    //Dictionary initializing with ASCII
+    for ( int unsigned i = 0 ; i < 256 ; i++ ){
+            dictionary[i] = string(1,i);
+    }
+    string previous_string;
+    unsigned int code;
+    unsigned int next_code = 256;
+    //Output file for decompressed data
+    ofstream outputFile;
+    outputFile.open(filename + "_uncompressed.txt");
+
+    int i =0;
+    while (i<size){
+        //Extracting 12 bits and converting binary to decimal
+        string subinput = input.substr(i,12);
+        bitset<12> binary(subinput);
+        code = binary.to_ullong();
+        i+=12;
+
+        if ( dictionary.find(code) ==dictionary.end() )
+            dictionary.insert(make_pair(code,(previous_string + previous_string.substr(0,1))));
+        outputFile<<dictionary[code];
+        if ( previous_string.size())
+            dictionary.insert(make_pair(next_code++,previous_string + dictionary[code][0]));
+        previous_string = dictionary[code];
+        }
+    outputFile.close();
+}
+
+string convert_char_to_string(const char *pCh, int arraySize){
+    string str;
+    if (pCh[arraySize-1] == '\0') str.append(pCh);
+    else for(int i=0; i<arraySize; i++) str.append(1,pCh[i]);
+    return str;
+}
+
+static void show_usage()
+{
+        cerr << "Usage: \n"
+              << "Specify the file that needs to be compressed or decompressed\n"
+              <<"lzw -c input    #compress file input\n"
+              <<"lzw -d input    #decompress file input\n"
+              <<"Compressed data will be found in a file with the same name but with a .lzw extension\n"
+              <<"Decompressed data can be found in a file with the same name and a _uncompressed.txt extension\n"
+              << endl;
+}
+
+
+int main () {
+
+    int a = 10 ;
+    convert_int_to_bin(a) ;
+
+
+
+    streampos size;
+    char * memblock;
+
+    if (argc <2)
+    {
+        show_usage();
+        return(1);
+    }
+    ifstream file (argv[2], ios::in|ios::binary|ios::ate);
+    if (file.is_open())
+    {
+        size = file.tellg();
+        memblock = new char[size];
+        file.seekg (0, ios::beg);
+        file.read (memblock, size);
+        file.close();
+        string input = convert_char_to_string(memblock,size);
+        if (string( "-c" ) == argv[1] )
+            compress(input,size, argv[2]);
+        else if (string( "-d" ) == argv[1] )
+            decompress(input,size, argv[2]);
+        else
+            show_usage();
+    }
+    else {
+    cout << "Unable to open file."<<endl;
+    show_usage();
+    }
+
+
+
+    return 0;
+}
+#include <iostream>
+#include <sstream>
+#include <fstream>
+
+#include <bitset>
+#include <string>
+#include <unordered_map>
+
+#define MAX_DEF 4096
+
+using namespace std;
+
+string convert_int_to_bin(int number)
+{
+    string result = bitset<6>(number).to_string();
+    cout<<result ;
+    return result;
+}
+
+void compress(string input, int size, string filename) {
+    unordered_map<string, int> compress_dictionary(MAX_DEF);
+    //Dictionary initializing with ASCII
+    for ( int unsigned i = 0 ; i < 256 ; i++ ){
+        compress_dictionary[string(1,i)] = i;
+    }
+    string current_string;
+    unsigned int code;
+    unsigned int next_code = 256;
+    //Output file for compressed data
+    ofstream outputFile;
+    outputFile.open(filename + ".rez1");
+
+    for(char& c: input){
+    current_string = current_string + c;
+    if ( compress_dictionary.find(current_string) ==compress_dictionary.end() ){
+            if (next_code <= MAX_DEF)
+                compress_dictionary.insert(make_pair(current_string, next_code++));
+                current_string.erase(current_string.size()-1);
+                outputFile << convert_int_to_bin(compress_dictionary[current_string]);
+                current_string = c ;
+        }
+    }
+    if (current_string.size())
+            outputFile << convert_int_to_bin(compress_dictionary[current_string]);
+    outputFile.close();
+}
+
+
+
+void decompress(string input, int size, string filename) {
+    unordered_map<unsigned int, string> dictionary(MAX_DEF);
+    //Dictionary initializing with ASCII
+    for ( int unsigned i = 0 ; i < 256 ; i++ ){
+            dictionary[i] = string(1,i);
+    }
+    string previous_string;
+    unsigned int code;
+    unsigned int next_code = 256;
+    //Output file for decompressed data
+    ofstream outputFile;
+    outputFile.open(filename + "_uncompressed.txt");
+
+    int i =0;
+    while (i<size){
+        //Extracting 12 bits and converting binary to decimal
+        string subinput = input.substr(i,12);
+        bitset<12> binary(subinput);
+        code = binary.to_ullong();
+        i+=12;
+
+        if ( dictionary.find(code) ==dictionary.end() )
+            dictionary.insert(make_pair(code,(previous_string + previous_string.substr(0,1))));
+        outputFile<<dictionary[code];
+        if ( previous_string.size())
+            dictionary.insert(make_pair(next_code++,previous_string + dictionary[code][0]));
+        previous_string = dictionary[code];
+        }
+    outputFile.close();
+}
+
+string convert_char_to_string(const char *pCh, int arraySize){
+    string str;
+    if (pCh[arraySize-1] == '\0') str.append(pCh);
+    else for(int i=0; i<arraySize; i++) str.append(1,pCh[i]);
+    return str;
+}
+
+static void show_usage()
+{
+        cerr << "Usage: \n"
+              << "Specify the file that needs to be compressed or decompressed\n"
+              <<"lzw -c input    #compress file input\n"
+              <<"lzw -d input    #decompress file input\n"
+              <<"Compressed data will be found in a file with the same name but with a .lzw extension\n"
+              <<"Decompressed data can be found in a file with the same name and a _uncompressed.txt extension\n"
+              << endl;
+}
