@@ -15,7 +15,7 @@ public class LZWCompression {
     public byte[] buffer = new byte[3];
     public boolean onleft = true;
 
-   
+    //String fi = null ;
     public void compress(String uncompressed) throws IOException {
         
         for (int i = 0; i < 256; i++) {
@@ -24,8 +24,12 @@ public class LZWCompression {
 
        
         RandomAccessFile read = new RandomAccessFile(uncompressed, "r");
-        RandomAccessFile out = new RandomAccessFile(uncompressed.concat(
-                ".lzw"), "rw");
+        
+        RandomAccessFile out = new RandomAccessFile("lzw.txt", "rw");
+        
+       // RandomAccessFile out = new RandomAccessFile(uncompressed.concat(".lzw"), "rw");
+        
+        //fi = uncompressed ;
 
         try {
             // Reads the First Character from input file into the String
@@ -45,7 +49,7 @@ public class LZWCompression {
                 if (i < 0) {
                     i += 256;
                 }
-                System.out.print(i + ", ");
+                //System.out.print(i + ", ");
                 ch = (char) i;
 
                 
@@ -106,9 +110,18 @@ public class LZWCompression {
     public String to12bit(int i) {
         String str = Integer.toBinaryString(i);
         while (str.length() < 12) {
-            str = "0" + str;
+            str = "0" + str ;
         }
         return str;
+    }
+    
+    
+    public double getLZWSize()
+    {
+            File fi ;
+            fi = new File("lzw.txt");
+            //System.out.println("hello bal");
+            return fi.length()/1024;
     }
 
 }

@@ -25,6 +25,7 @@ public class LZWDecompression {
         }
 
         // Read input as uncompressed file & Write out compressed file
+        
         RandomAccessFile in = new RandomAccessFile(input, "r");
         RandomAccessFile out = new RandomAccessFile(input.replace(
                 ".lzw", ""), "rw");

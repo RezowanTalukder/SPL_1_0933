@@ -1,6 +1,7 @@
 
 package rez1;
 
+import static java.awt.PageAttributes.MediaType.C;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -12,7 +13,7 @@ public class ReZ1 {
    
     public static void main(String[] args) throws IOException {
         try {
-            LZWCompression lzw = new LZWCompression();
+            
 
             Scanner input = new Scanner(System.in);
 
@@ -23,19 +24,26 @@ public class ReZ1 {
             File file = new File(str);
 
             Scanner fileScanner = new Scanner(file);
-
-            String line = "";
-
-            while (fileScanner.hasNext()) {
-                line = fileScanner.nextLine();
-                System.out.println("Contents of your file being compressed: \n"
-                        + line);
-            }
             
+            LZWCompression lzw = new LZWCompression();
             lzw.compress(str);
+            double lzwS = lzw.getLZWSize() ;
             
-            System.out.println("\nCompression of your file is complete!");
-            System.out.println("Your new file is named: " + str.concat(".lzw"));
+            RLECompress rle = new RLECompress() ;
+            rle.compress(str);
+            double rleS = rle.getRLESize() ;
+            
+            LZ77Compress lz77 = new LZ77Compress() ;
+            lz77.compress(str);
+            
+            
+            double lz77S = lz77.getLZ77Size() ;        
+
+   
+            System.out.println(lzwS+"  "+rleS+"  "+lz77S);
+            
+            
+            
             
         } catch (FileNotFoundException e) {
             System.out.println("File was not found!");
