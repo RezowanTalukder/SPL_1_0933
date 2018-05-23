@@ -2,24 +2,26 @@
 package rez1;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Comparator;
+import java.util.Scanner;
 
 public class HuffmanCompression {
 
 
 
-    class HuffmanNode{
+    class Node{
         int freq;
         char input;
-        HuffmanNode left;
-        HuffmanNode right;
+        Node left;
+        Node right;
     }
 
-    class HuffmanNodeComparator implements Comparator<HuffmanNode>{
-        public int compare(HuffmanNode o1, HuffmanNode o2) {
+    class HuffCom implements Comparator<Node>{
+        public int compare(Node o1, Node o2) {
             if(o1.freq < o2.freq){
                 return -1;
             }else{
@@ -32,19 +34,19 @@ public class HuffmanCompression {
     public class HuffmanEncoding {
 
         public Map<Character,String> huffman(char[] input, int freq[]){
-            HuffmanNodeComparator comparator = new HuffmanNodeComparator();
-            PriorityQueue<HuffmanNode> heap = new PriorityQueue<HuffmanNode>(input.length,comparator);
+            HuffCom comparator = new HuffCom();
+            PriorityQueue<Node> heap = new PriorityQueue<Node>(input.length,comparator);
             for(int i=0; i < input.length; i++){
-                HuffmanNode node = new HuffmanNode();
+                Node node = new Node();
                 node.freq = freq[i];
                 node.input = input[i];
                 heap.offer(node);
             }
 
             while(heap.size() > 1){
-                HuffmanNode node1 = heap.poll();
-                HuffmanNode node2 = heap.poll();
-                HuffmanNode node = new HuffmanNode();
+                Node node1 = heap.poll();
+                Node node2 = heap.poll();
+                Node node = new Node();
                 node.left = node1;
                 node.right = node2;
                 node.freq = node1.freq + node2.freq;
@@ -58,7 +60,7 @@ public class HuffmanCompression {
 
         }
 
-        public void createCode(HuffmanNode node,Map<Character,String> map,StringBuffer buff){
+        public void createCode(Node node,Map<Character,String> map,StringBuffer buff){
             if(node == null){
                 return;
             }
@@ -76,12 +78,19 @@ public class HuffmanCompression {
         }
        
 
-        public void huffmanMain(String fileName){
+        public void huffmanMain(String fileName) throws FileNotFoundException{
             HuffmanEncoding huff = new HuffmanEncoding();
             char input[] = {'a','b','c','d','e','f'};
             int freq[] = {5,9,12,13,16,45};
             Map<Character,String> code = huff.huffman(input, freq);
             System.out.println(code);
+            
+            String content = new Scanner(new File("filename")).useDelimiter("\\Z").next();
+            
+            for(int i=0 ;i<content.length() ;i++){
+                //char ch = content[i] ;
+                //freq[ch]++ ;
+            }
             
             /*
            // char input[] ;
@@ -90,6 +99,8 @@ public class HuffmanCompression {
             File file = new File(fileName) ;
             
             char ch ;
+            
+            String content = new Scanner(new File("filename")).useDelimiter("\\Z").next();
             
             Map<char,Integer>mp = new  HashMap<char,Integer>();
             

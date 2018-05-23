@@ -3,6 +3,11 @@ package rez1;
 
 import java.awt.Color;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -90,22 +95,76 @@ public class OutForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         JFileChooser chooser = new JFileChooser() ;
         chooser.showOpenDialog(null) ;
         
         File f = chooser.getSelectedFile();
         String fileName = f.getAbsolutePath() ;
-        jTextField1.setText(fileName);
+        jTextField1.setText(fileName) ;
+       // fN = fileName ;         
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
+       
+        
+        
     }//GEN-LAST:event_jTextField1ActionPerformed
 
+
+    
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         
         
+       // #####################
+         try {
+            
+
+            Scanner input = new Scanner(System.in);
+
+           // System.out.println("Enter the name of your (input.txt) file : ");
+
+            //String str = input.nextLine();
+            String fN =jTextField1.getText() ;
+            
+             System.out.println(fN);
+            
+            File file = new File(fN);
+
+            Scanner fileScanner = new Scanner(file);
+            
+            LZWCompression lzw = new LZWCompression();
+            lzw.compress(fN);
+            double lzwS = lzw.getLZWSize() ;
+            
+            RLECompress rle = new RLECompress() ;
+            rle.compress(fN);
+            double rleS = rle.getRLESize() ;
+            
+            LZ77Compress lz77 = new LZ77Compress() ;
+            lz77.compress(fN);
+            
+            
+            double lz77S = lz77.getLZ77Size() ;        
+
+   
+          //  System.out.println(lzwS+"  "+rleS+"  "+lz77S);
+            
+            
+                 
+        } catch (FileNotFoundException e) {
+            System.out.println("File was not found!");
+        } catch (IOException ex) {
+            Logger.getLogger(OutForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        
+        
+        
+        //#######################
         double huff = 0.5 ;
         double lzw = 0.6 ;
         double lz77 = 0.8 ;

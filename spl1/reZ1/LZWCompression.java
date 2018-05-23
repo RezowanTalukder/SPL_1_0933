@@ -24,8 +24,10 @@ public class LZWCompression {
 
        
         RandomAccessFile read = new RandomAccessFile(uncompressed, "r");
+        String outputFile =  uncompressed+".lzw.txt";
+        RandomAccessFile out = new RandomAccessFile(outputFile , "rw");
         
-        RandomAccessFile out = new RandomAccessFile("lzw.txt", "rw");
+       // System.out.println("file name thik ase");
         
        // RandomAccessFile out = new RandomAccessFile(uncompressed.concat(".lzw"), "rw");
         
@@ -89,8 +91,7 @@ public class LZWCompression {
             String str12bit = to12bit(dictionary.get(str));
             if (onleft) {
                 buffer[0] = (byte) Integer.parseInt(str12bit.substring(0, 8), 2);
-                buffer[1] = (byte) Integer.parseInt(str12bit.substring(8, 12)
-                        + "0000", 2);
+                buffer[1] = (byte) Integer.parseInt(str12bit.substring(8, 12) + "0000", 2);
                 out.writeByte(buffer[0]);
                 out.writeByte(buffer[1]);
             } else {

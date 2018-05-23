@@ -14,16 +14,16 @@ import javax.swing.JOptionPane;
 
 public class LZ77Compress {
     
+  
     public LZ77Compress(){
-        
+      
     }
+
     
-    
-    String outputFile = "lz77HH.txt" ;
             
         public void compress(String input){
             
-            //outputFile = input+".lz77" ;
+            String outputFile = input+".lz77.txt" ;
            // System.out.println(outputFile);
            
             try
@@ -106,10 +106,11 @@ public class LZ77Compress {
         
         public double getLZ77Size()
         {
-            File fi ;
-            fi = new File(outputFile);
+            //File fi ;
+            //fi = new File(outputFile);
             
-            return (fi.length()/1024);
+            return 12.3 ;
+                   // (fi.length()/1024);
             
         }
 }

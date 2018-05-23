@@ -23,8 +23,9 @@ public class RLECompress {
             
         }
         
+        static int size ;
         
-        public static void encode(String source) {
+        public static void encode(String source,String fName) {
                     StringBuffer dest = new StringBuffer();
                     for (int i = 0; i < source.length(); i++) {
                         int runLength = 1;
@@ -39,9 +40,10 @@ public class RLECompress {
                     //return dest.toString();
                     try{
                         //System.out.println(dest.toString());
-                        
-                        PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("rle.txt",true))) ;
-                        Files.write(Paths.get("rle.txt"),dest.toString().getBytes(), StandardOpenOption.APPEND) ;
+                        String outputFile = fName+".rle.txt" ;
+                        PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputFile,true))) ;
+                        Files.write(Paths.get(outputFile),dest.toString().getBytes(), StandardOpenOption.APPEND) ;
+                        size = dest.length() ;
                         //out.println(dest.toString().getBytes());
                     }catch(Exception e){
                         //
@@ -77,10 +79,8 @@ public class RLECompress {
         
         public double getRLESize()
         {
-            File fi ;
-            fi = new File("rle.txt");
-            //System.out.println("hello bal");
-            return fi.length()/1024;
+            
+            return size/1024;
         }
         
         public static void compress(String fName) throws FileNotFoundException, IOException {
@@ -88,7 +88,7 @@ public class RLECompress {
             FileReader in = new FileReader(fName) ;
             BufferedReader br = new BufferedReader(in) ;
             while((example=br.readLine())!=null){
-                encode(example);
+                encode(example,fName);
             }
             
             
