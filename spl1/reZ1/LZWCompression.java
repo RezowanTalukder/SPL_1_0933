@@ -14,6 +14,7 @@ public class LZWCompression {
     public byte inputByte;
     public byte[] buffer = new byte[3];
     public boolean onleft = true;
+    public static int len ;
 
     //String fi = null ;
     public void compress(String uncompressed) throws IOException {
@@ -24,7 +25,7 @@ public class LZWCompression {
 
        
         RandomAccessFile read = new RandomAccessFile(uncompressed, "r");
-        String outputFile =  uncompressed+".lzw.txt";
+        String outputFile =  uncompressed+"_lzw.txt" ;
         RandomAccessFile out = new RandomAccessFile(outputFile , "rw");
         
        // System.out.println("file name thik ase");
@@ -34,8 +35,9 @@ public class LZWCompression {
         //fi = uncompressed ;
 
         try {
-            // Reads the First Character from input file into the String
+            
             inputByte = read.readByte();
+            
             int i = new Byte(inputByte).intValue();
             if (i < 0) {
                 i += 256;
@@ -43,7 +45,8 @@ public class LZWCompression {
             char ch = (char) i;
             str = "" + ch;
 
-            // Reads Character by Character
+            // Reads Characters
+            
             while (true) {
                 inputByte = read.readByte();
                 i = new Byte(inputByte).intValue();
@@ -57,24 +60,26 @@ public class LZWCompression {
                 
                 if (dictionary.containsKey(str + ch)) {
                     str = str + ch;
-                } else {
+                }
+                
+                else {
                     String s12 = to12bit(dictionary.get(str));
 
                     if (onleft) {
-                        buffer[0] = (byte) Integer.parseInt(
-                                s12.substring(0, 8), 2);
-                        buffer[1] = (byte) Integer.parseInt(
-                                s12.substring(8, 12) + "0000", 2);
-                    } else {
-                        buffer[1] += (byte) Integer.parseInt(
-                                s12.substring(0, 4), 2);
-                        buffer[2] = (byte) Integer.parseInt(
-                                s12.substring(4, 12), 2);
+                        buffer[0] = (byte) Integer.parseInt(s12.substring(0, 8), 2);
+                        buffer[1] = (byte) Integer.parseInt(s12.substring(8, 12) + "0000", 2);
+                    }
+                    
+                    else {
+                        buffer[1] += (byte) Integer.parseInt(s12.substring(0, 4), 2);
+                        buffer[2] = (byte) Integer.parseInt( s12.substring(4, 12), 2);
+                        
                         for (int b = 0; b < buffer.length; b++) {
                             out.writeByte(buffer[b]);
                             buffer[b] = 0;
                         }
                     }
+                    
                     onleft = !onleft;
 
                     
@@ -88,21 +93,9 @@ public class LZWCompression {
             }
            
         } catch (IOException e) {
-            String str12bit = to12bit(dictionary.get(str));
-            if (onleft) {
-                buffer[0] = (byte) Integer.parseInt(str12bit.substring(0, 8), 2);
-                buffer[1] = (byte) Integer.parseInt(str12bit.substring(8, 12) + "0000", 2);
-                out.writeByte(buffer[0]);
-                out.writeByte(buffer[1]);
-            } else {
-                buffer[1] += (byte) Integer.parseInt(str12bit.substring(0, 4), 2);
-                buffer[2] = (byte) Integer.parseInt(str12bit.substring(4, 12), 2);
-
-                for (int b = 0; b < buffer.length; b++) {
-                    out.writeByte(buffer[b]);
-                    buffer[b] = 0;
-                }
-            }
+           
+            System.out.println(out.length()) ;
+            len = (int) out.length() ;
             read.close();
             out.close();
         }
@@ -118,11 +111,30 @@ public class LZWCompression {
     
     
     public double getLZWSize()
-    {
-            File fi ;
-            fi = new File("lzw.txt");
-            //System.out.println("hello bal");
-            return fi.length()/1024;
+    {   
+            return len ;
     }
 
 }
+
+// Exception
+
+
+ /*
+            String str12bit = to12bit(dictionary.get(str));
+            if (onleft) {
+                buffer[0] = (byte) Integer.parseInt(str12bit.substring(0, 8), 2);
+                buffer[1] = (byte) Integer.parseInt(str12bit.substring(8, 12) + "0000", 2);
+                out.writeByte(buffer[0]);
+                out.writeByte(buffer[1]);
+            } else {
+                buffer[1] += (byte) Integer.parseInt(str12bit.substring(0, 4), 2);
+                buffer[2] = (byte) Integer.parseInt(str12bit.substring(4, 12), 2);
+
+                for (int b = 0; b < buffer.length; b++) {
+                    out.writeByte(buffer[b]);
+                    buffer[b] = 0;
+                }
+            }
+                    
+            */

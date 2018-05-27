@@ -23,27 +23,27 @@ public class RLECompress {
             
         }
         
-        static int size ;
+        public static String outputFile ;
         
         public static void encode(String source,String fName) {
                     StringBuffer dest = new StringBuffer();
                     for (int i = 0; i < source.length(); i++) {
                         int runLength = 1;
-                        while (i + 1 < source.length()
-                                && source.charAt(i) == source.charAt(i + 1)) {
+                        while (i + 1 < source.length() && source.charAt(i) == source.charAt(i + 1)) {
                             runLength++;
                             i++;
                         }
+                        
                         dest.append(runLength);
                         dest.append(source.charAt(i));
                     }
                     //return dest.toString();
                     try{
                         //System.out.println(dest.toString());
-                        String outputFile = fName+".rle.txt" ;
+                        outputFile = fName+"_rle.txt" ;
                         PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputFile,true))) ;
                         Files.write(Paths.get(outputFile),dest.toString().getBytes(), StandardOpenOption.APPEND) ;
-                        size = dest.length() ;
+                       // size = dest.length() ;
                         //out.println(dest.toString().getBytes());
                     }catch(Exception e){
                         //
@@ -52,7 +52,7 @@ public class RLECompress {
                     
            }
      
-
+/*
         public static void decode(String source) {
             StringBuffer dest = new StringBuffer();
             Pattern pattern = Pattern.compile("[0-9]+|[a-zA-Z]");
@@ -76,14 +76,22 @@ public class RLECompress {
                         //
                     }
         }
+       
         
-        public double getRLESize()
+        */
+        
+        
+       public double getRLESize()
         {
+            File fi ;
+            fi = new File(outputFile);
             
-            return size/1024;
+            return fi.length() ;
+            
         }
         
         public static void compress(String fName) throws FileNotFoundException, IOException {
+           
             String example = null ;
             FileReader in = new FileReader(fName) ;
             BufferedReader br = new BufferedReader(in) ;

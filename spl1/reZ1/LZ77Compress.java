@@ -15,19 +15,20 @@ import javax.swing.JOptionPane;
 public class LZ77Compress {
     
   
-    public LZ77Compress(){
-      
-    }
+        public LZ77Compress(){
 
-    
+        }
+
+        public static int size ;
+        public String outputFile ;
             
         public void compress(String input){
             
-            String outputFile = input+".lz77.txt" ;
+            outputFile = input+"_lz77.txt" ;
            // System.out.println(outputFile);
            
-            try
-            {
+        try
+        {
             FileInputStream file=new FileInputStream(input);
             DataInputStream data=new DataInputStream(file);
             BufferedReader br=new BufferedReader(new InputStreamReader(data));
@@ -54,7 +55,7 @@ public class LZ77Compress {
                            if(z!=-1)
                            {
                                l=z;
-                                j++;
+                               j++;
 
                                 if(j>input.length())
                                 {
@@ -93,6 +94,8 @@ public class LZ77Compress {
             
             }
             
+            //size = f1.length() ;
+            
             d1.close();
             data.close();
             
@@ -106,11 +109,10 @@ public class LZ77Compress {
         
         public double getLZ77Size()
         {
-            //File fi ;
-            //fi = new File(outputFile);
+            File fi ;
+            fi = new File(outputFile);
             
-            return 12.3 ;
-                   // (fi.length()/1024);
+            return fi.length() ;
             
         }
 }
