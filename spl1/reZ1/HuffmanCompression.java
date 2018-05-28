@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Scanner;
 import static rez1.RLECompress.encode;
 
@@ -176,19 +177,19 @@ public class HuffmanCompression {
             for(int i=0 ;i<index ;i++){
                 System.out.println("here : "+input[i]+"  "+freq[i]);
             }
+            Files.write(Paths.get(outputFile),code.toString().getBytes(), StandardOpenOption.APPEND) ;
             */
             
             
             Map<Character,String> code = huffman(input, freq);
-            
-           // System.out.println(code);
-            
-  
-            
+                     
             outputFile = fileName+"_huffman.txt" ;
+            Iterator<Map.Entry<Character,String>>entries = code.entrySet().iterator() ;
             
-            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputFile,true))) ;
-            Files.write(Paths.get(outputFile),code.toString().getBytes(), StandardOpenOption.APPEND) ;
+            while(entries.hasNext()){
+                Map.Entry<Character,String> entry = entries.next() ;
+                Files.write(Paths.get(outputFile),entry.getValue().toString().getBytes(), StandardOpenOption.APPEND) ;
+            }
         }
 
     }
