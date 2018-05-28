@@ -1,11 +1,23 @@
 
+/*  Author
+    Md Rezowan Talukder
+*/
+
+/*
+    *this class is the main class of this project
+    *Objects are created from others 4 class to get the size of compressed file
+    *FJreeChart is also used in this class
+    *user inteface is created in this class also
+*/
+
+
+
 package rez1;
 
 import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -99,13 +111,15 @@ public class MainAndOutForm extends javax.swing.JFrame {
     
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+       
         JFileChooser chooser = new JFileChooser() ;
         chooser.showOpenDialog(null) ;
         
         File f = chooser.getSelectedFile();
         String fileName = f.getAbsolutePath() ;
         jTextField1.setText(fileName) ;
-       // fN = fileName ;         
+       // fN = fileName ;
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
@@ -127,7 +141,9 @@ public class MainAndOutForm extends javax.swing.JFrame {
             File file = new File(fN);
 
             double originalFileLength = file.length() ;
-            
+             System.out.println("original   "+ file.length());
+              
+              
             LZWCompression lzw = new LZWCompression();
             lzw.compress(fN);
             double lzwS = lzw.getLZWSize() ;
@@ -146,18 +162,20 @@ public class MainAndOutForm extends javax.swing.JFrame {
             double huffS = hf.getHuffmanSize() ;
             
            
-            double lzw_final = lzwS / originalFileLength ;
-            double lz77_final = lz77S / originalFileLength ;
-            double huff_final = huffS/ originalFileLength ;
-            double rle_final = rleS / originalFileLength ;
+            double lzw_final =  originalFileLength/ lzwS ;
+            double lz77_final =  originalFileLength/ lz77S  ;
+            double huff_final =  originalFileLength/ huffS ;
+            double rle_final =  originalFileLength/ rleS ;
 
             DefaultCategoryDataset barChartData = new DefaultCategoryDataset() ;
+            
             barChartData.setValue(huff_final,"Compression Ratio", "Huffman");
             barChartData.setValue(lzw_final,"Compression Ratio", "LZW");
             barChartData.setValue(rle_final,"Compression Ratio", "RLE");
             barChartData.setValue(lz77_final,"Compression Ratio", "LZ77");
 
-            JFreeChart barChart = ChartFactory.createBarChart("Compression Test","Algorithms", "Compression Ratio", barChartData,PlotOrientation.VERTICAL,false,true,false) ;
+            JFreeChart barChart = ChartFactory.createBarChart("Compression Test","Algorithms", "Compression Ratio",
+                    barChartData,PlotOrientation.VERTICAL,false,true,false) ;
 
             CategoryPlot barChrt = barChart.getCategoryPlot() ;
             barChrt.setRangeGridlinePaint(Color.ORANGE);
@@ -166,15 +184,9 @@ public class MainAndOutForm extends javax.swing.JFrame {
 
             jPanel1.removeAll() ;
             jPanel1.add(barPanel);
-            //jPanel1.repaint();
             jPanel1.validate(); 
             
-            
-            ////// huffman kuttar bacca
- 
-            
-            /////////
-            
+                   
                  
         } catch (FileNotFoundException e) {
             System.out.println("File was not found!");

@@ -1,12 +1,24 @@
+/*  Author
+    Md Rezowan Talukder
+*/
+
+/*
+    *Huffman algorithm is implemented in this class 
+    *using HashMap and priority Queue
+
+*/
 
 package rez1;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -15,6 +27,7 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Comparator;
 import java.util.Scanner;
+import static rez1.RLECompress.encode;
 
  class Node{
            int frequency;
@@ -100,18 +113,28 @@ public class HuffmanCompression {
         {
             File fi ;
             fi = new File(outputFile);
-            
+            System.out.println("huff   "+fi.length());
             return fi.length() ;
         }
 
         public void compress(String fileName) throws FileNotFoundException, IOException{
-            String fileN = fileName ;       
-            String content = new Scanner(new File(fileN)).useDelimiter("\\Z").next();
+            
+            
+            String content = "" ;
+            String word ;
+            FileReader in = new FileReader(fileName) ;
+            BufferedReader br = new BufferedReader(in) ;
+            while((word=br.readLine())!=null){
+                content+=word ;
+            }
+            
+            //String fileN = fileName ;       
+            //String content = new Scanner(new File(fileN)).useDelimiter("\\Z").next();
             
             input = content.toCharArray() ;
             
-            a = new char[99999];
-            freq = new int[99999];
+            a = new char[999999];
+            freq = new int[999999];
         
             int index = 0 ;
             

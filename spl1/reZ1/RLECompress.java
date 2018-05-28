@@ -1,3 +1,13 @@
+/*  Author
+    Md Rezowan Talukder
+*/
+
+/*
+    *this class implement rle algorithm to compress file 
+    *compression done line by line
+    *there is an extra method commented out which can decompress file 
+*/
+
 
 package rez1;
 
@@ -37,14 +47,14 @@ public class RLECompress {
                         dest.append(runLength);
                         dest.append(source.charAt(i));
                     }
-                    //return dest.toString();
+                   
                     try{
                         //System.out.println(dest.toString());
                         outputFile = fName+"_rle.txt" ;
                         PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputFile,true))) ;
                         Files.write(Paths.get(outputFile),dest.toString().getBytes(), StandardOpenOption.APPEND) ;
                        // size = dest.length() ;
-                        //out.println(dest.toString().getBytes());
+                       //out.println(dest.toString().getBytes());
                     }catch(Exception e){
                         //
                     }
@@ -85,7 +95,7 @@ public class RLECompress {
         {
             File fi ;
             fi = new File(outputFile);
-            
+              System.out.println("rle  "+fi.length());
             return fi.length() ;
             
         }
@@ -98,22 +108,7 @@ public class RLECompress {
             while((example=br.readLine())!=null){
                 encode(example,fName);
             }
-            
-            
-            
-            
-           /*
-             in = new FileReader("rle.txt") ;
-             br = new BufferedReader(in) ;
-            
-            while((example=br.readLine())!=null){
-                decode(example);
-            }
-            
-
-            */
-            
-            
+                     
         }
  
 }

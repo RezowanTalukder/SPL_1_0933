@@ -1,3 +1,12 @@
+/*  Author
+    Md Rezowan Talukder
+*/
+
+/*
+    *this class implement LZ77 algorithm to compress file 
+    *FileStream is used so cm compress any type of file
+
+*/
 
 package rez1;
 import java.io.*;
@@ -5,12 +14,9 @@ import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+
 import java.io.InputStreamReader;
-import java.util.StringTokenizer;
-import javax.swing.JOptionPane;
+
 
 public class LZ77Compress {
     
@@ -103,7 +109,7 @@ public class LZ77Compress {
             }
             catch (Exception ex)
             {
-                // Do nothig
+                System.out.println("Problem in opening file (LZ_77)");
             }
         }
         
@@ -111,7 +117,7 @@ public class LZ77Compress {
         {
             File fi ;
             fi = new File(outputFile);
-            
+            System.out.println("lz77   "+fi.length());
             return fi.length() ;
             
         }
