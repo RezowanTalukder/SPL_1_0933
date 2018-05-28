@@ -1,0 +1,6 @@
+This is a simple tool for testing compression algorithm
+to use this tool:
+  1.run MainAndInterface class
+  2.select a file from drive
+  3.press show graph
+  then you will find a bar diagram showing compression ratio
