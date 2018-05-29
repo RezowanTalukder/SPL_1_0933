@@ -1,6 +1,3 @@
-/*  Author
-    Md Rezowan Talukder
-*/
 
 /*
     *LZW algorithm is implemented using 
@@ -10,115 +7,109 @@
 
 package rez1;
 
-import java.io.*;
-import java.util.*;
+/*  Author
+    Md Rezowan Talukder
+*/
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class LZWCompression {
 
-    public LZWCompression(){
-        
+    public HashMap compdic, decompdic;
+    String fileName  ;
+    short lastcode = 0, dlastcode = 0;
+
+    LZWCompression(String f) {
+        compdic = new HashMap<String, Integer>();
+        decompdic = new HashMap<Integer, String>();
+        createDictionary(f);
     }
-    public HashMap<String, Integer> dictionary = new HashMap<>();
-    public int dictSize = 256;
-    public String str = "";
-    public byte inputByte;
-    public byte[] buffer = new byte[3];
-    public boolean onleft = true;
-    public static int len ;
 
-    //String fi = null ;
-    
-    public void compress(String uncompressed) throws IOException {
+    public void createDictionary(String f) {
+       fileName = f ;
         
-        for (int i = 0; i < 256; i++) {
-            dictionary.put(Character.toString((char) i), i);
-        }
-
-       
-        RandomAccessFile read = new RandomAccessFile(uncompressed, "r");
-        String outputFile =  uncompressed+"_lzw.txt" ;
-        RandomAccessFile out = new RandomAccessFile(outputFile , "rw");
-        
-
-
         try {
-            
-            inputByte = read.readByte();
-            
-            int i = new Byte(inputByte).intValue();
-            if (i < 0) {
-                i += 256;
-            }
-            char ch = (char) i;
-            str = "" + ch;
+            short code;
+            char ch;
+            FileInputStream fis = new FileInputStream(fileName);
+            InputStreamReader rdr = new InputStreamReader(fis, "utf-8");
+            while ((code = (short) rdr.read()) != -1) {
+                ch = (char) code;
 
-            // Reads Characters
-            
-            while (true) {
-                inputByte = read.readByte();
-                i = new Byte(inputByte).intValue();
-
-                if (i < 0) {
-                    i += 256;
-                }
-                //System.out.print(i + ", ");
-                ch = (char) i;
-
-                
-                if (dictionary.containsKey(str + ch)) {
-                    str = str + ch;
-                }
-                
-                else {
-                    String s12 = to12bit(dictionary.get(str));
-
-                    if (onleft) {
-                        buffer[0] = (byte) Integer.parseInt(s12.substring(0, 8), 2);
-                        buffer[1] = (byte) Integer.parseInt(s12.substring(8, 12) + "0000", 2);
+                if (!compdic.containsKey(ch)) {
+                    compdic.put("" + ch, code);
+                    decompdic.put(code, "" + ch);
+                    if (code > lastcode) {
+                        lastcode = code;
+                        dlastcode = code;
                     }
-                    
-                    else {
-                        buffer[1] += (byte) Integer.parseInt(s12.substring(0, 4), 2);
-                        buffer[2] = (byte) Integer.parseInt( s12.substring(4, 12), 2);
-                        
-                        for (int b = 0; b < buffer.length; b++) {
-                            out.writeByte(buffer[b]);
-                            buffer[b] = 0;
-                        }
-                    }
-                    
-                    onleft = !onleft;
-
-                    
-                    if (dictSize < 4096) {
-                        dictionary.put(str + ch, dictSize++);
-                    }
-                    str = "" + ch;
                 }
             }
-           
-        } catch (IOException e) {
-           
-           System.out.println("lzw   "+ out.length()) ;
-            len = (int) out.length() ;
-            read.close();
-            out.close();
+            fis.close();
+        } catch (Exception ex) {
+            Logger.getLogger(LZWCompression.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public String to12bit(int i) {
-        String str = Integer.toBinaryString(i);
-        while (str.length() < 12) {
-            str = "0" + str ;
+    public void compressFile(String f) {
+        fileName = f ;
+        
+        try {
+            short code, codeword;
+            char c;
+            String s;
+
+        
+            FileInputStream fis = new FileInputStream(fileName);
+            InputStreamReader rdr = new InputStreamReader(fis, "utf-8");
+            FileOutputStream fos = new FileOutputStream(fileName + "_lzw.txt");
+            ObjectOutputStream fout = new ObjectOutputStream(fos);
+
+            s = (char) rdr.read() + "";
+            while ((code = (short) rdr.read()) != -1) {
+                c = (char) code;
+
+                if (!compdic.containsKey(s + c)) {
+                    codeword = Short.parseShort(compdic.get(s).toString());
+
+                    fout.writeShort(codeword);
+                    compdic.put(s + c, ++lastcode);
+                    s = "" + c;
+                } else {
+                    s = s + c;
+                }
+            }
+
+            codeword = Short.parseShort(compdic.get(s).toString());
+            fout.writeShort(codeword);
+            fout.writeShort(00);
+
+            fout.close();
+            fis.close();
+
+        } catch (Exception ex) {
+            Logger.getLogger(LZWCompression.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return str;
-    }
-    
-    
-    public double getLZWSize()
-    {   
-            return len ;
     }
 
+   public double getLZWSize(String f) {
+       File fi ;
+       fi = new File(f + "_lzw.txt");
+       return fi.length() ;
+    }
+
+    public void compress(String f) {
+        LZWCompression lzw = new LZWCompression(f);
+        lzw.compressFile(f);
+     
+    }
 }
-

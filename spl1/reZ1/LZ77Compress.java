@@ -1,6 +1,3 @@
-/*  Author
-    Md Rezowan Talukder
-*/
 
 /*
     *this class implement LZ77 algorithm to compress file 
@@ -9,114 +6,112 @@
 */
 
 package rez1;
+
+/*  Author
+    Md Rezowan Talukder
+*/
+
+
 import java.io.*;
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 
-import java.io.InputStreamReader;
 
 
 public class LZ77Compress {
     
+         public static final int DEFAULT_BUFF_SIZE = 1024;
+         protected int mBufferSize;
+         protected Reader mIn;
+         protected PrintWriter mOut;
+         protected StringBuffer mSearchBuffer;
   
-        public LZ77Compress(){
-
+        public LZ77Compress() {
+             this(DEFAULT_BUFF_SIZE);
         }
+  
+        public LZ77Compress(int buffSize) {
+              mBufferSize = buffSize;
+              mSearchBuffer = new StringBuffer(mBufferSize);
+         }
 
-        public static int size ;
-        public String outputFile ;
+
+        
+        
+         private void trimSearchBuffer() {
+             if (mSearchBuffer.length() > mBufferSize) {
+                     mSearchBuffer=mSearchBuffer.delete(0,  mSearchBuffer.length() - mBufferSize);
+                }
+         }
             
-        public void compress(String input){
-            
-            outputFile = input+"_lz77.txt" ;
-           // System.out.println(outputFile);
-           
-            try
-            {
-                FileInputStream file=new FileInputStream(input);
-                DataInputStream data=new DataInputStream(file);
-                BufferedReader br=new BufferedReader(new InputStreamReader(data));
+        public void compress(String infile) throws IOException {
+                
+                mIn = new BufferedReader(new FileReader(infile));
+                mOut = new PrintWriter(new BufferedWriter(new FileWriter(infile+"_lz77.txt")));
 
+                int nextChar;
+                String currentMatch = "";
+                int matchIndex = 0, tempIndex = 0;
 
-                FileOutputStream f1=new FileOutputStream(outputFile);
-                DataOutputStream d1=new DataOutputStream(f1);
+                
+                while ((nextChar = mIn.read()) != -1) {
+                  
+                        tempIndex = mSearchBuffer.indexOf(currentMatch + (char)nextChar);
 
-                while((input=br.readLine())!=null)
-                {
-                        int pointer=0,len1=0;
-                        char o='0',nc='0';
-                        String w,y=null,x=null;
-                        int i,j=0,z,l=0;
+                        if (tempIndex != -1) {
+                             currentMatch += (char)nextChar;
+                             matchIndex = tempIndex;
+                        } 
+                        
+                        else {
 
-                        for(i=0;i<=input.length();i++)
-                        {
-                            w=null;
-                            w=input.substring(0,i);
-                            j=i+1;
-                           do{
-                               y=input.substring(i,j);
-                               z=w.lastIndexOf(y);
-                               if(z!=-1)
-                               {
-                                   l=z;
-                                   j++;
+                          String codedString = "~"+matchIndex+"~"+currentMatch.length()+"~"+(char)nextChar;
+                          String concat = currentMatch + (char)nextChar;
 
-                                    if(j>input.length())
-                                    {
-                                        i=input.length();
-                                        pointer=w.length()-l;
-                                        len1=y.length();
-                                        nc='0';
-                                        d1.writeInt(pointer);
-                                        d1.writeInt(len1);
-                                        d1.writeChar(nc);
-                                        break;
-                                    }
-                               }
-                               else
-                               {
-                                   i=w.length()+(y.length()-1);
-                                   if(y.length()==1)
-                                   {
-                                       pointer=0;
-                                       len1=0;
-                                   }
-                                   else
-                                   {
-                                       pointer=w.length()-l;
-                                       len1=y.length()-1;
+                          if (codedString.length() <= concat.length()) {
+                                mOut.print(codedString);
+                                mSearchBuffer.append(concat); 
+                                currentMatch = "";
+                                matchIndex = 0;
+                          } 
+                          else {
 
-                                   }
-                                   nc=y.charAt(y.length()-1);
-                                   d1.writeInt(pointer);
-                                   d1.writeInt(len1);
-                                   d1.writeChar(nc);
-                                   break;
-                               }
-                            } while(z!=-1);
+                                currentMatch = concat; matchIndex = -1;
+                                
+                                while (currentMatch.length() > 1 && matchIndex == -1) {
+                                    mOut.print(currentMatch.charAt(0));
+                                    mSearchBuffer.append(currentMatch.charAt(0));
+                                    currentMatch = currentMatch.substring(1, currentMatch.length());
+                                    matchIndex = mSearchBuffer.indexOf(currentMatch);
+                                }
+                          }
+
+                          trimSearchBuffer();
+                        }
+                }
+                
+                if (matchIndex != -1) {
+                    
+                  String codedString = "~"+matchIndex+"~"+currentMatch.length();
+                  
+                  if (codedString.length() <= currentMatch.length()) {
+                         mOut.print("~"+matchIndex+"~"+currentMatch.length());
+                  } 
+                  else {
+                        mOut.print(currentMatch);
                   }
-
                 }
-
-                //size = f1.length() ;
-
-                d1.close();
-                data.close();
-
-
-                }
-                catch (Exception ex)
-                {
-                    System.out.println("Problem in opening file (LZ_77)");
-                }
+               
+                
+                mIn.close();
+                
+                mOut.flush(); mOut.close();
         }
         
-        public double getLZ77Size()
+        public double getLZ77Size(String f)
         {
             File fi ;
-            fi = new File(outputFile);
+            fi = new File(f+"_lz77.txt");
             System.out.println("lz77   "+fi.length());
             return fi.length() ;
             

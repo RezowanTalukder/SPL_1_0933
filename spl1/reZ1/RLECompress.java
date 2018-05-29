@@ -1,6 +1,3 @@
-/*  Author
-    Md Rezowan Talukder
-*/
 
 /*
     *this class implement rle algorithm to compress file 
@@ -10,6 +7,12 @@
 
 
 package rez1;
+
+/* 
+    Author
+    Md Rezowan Talukder
+*/
+
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -62,6 +65,31 @@ public class RLECompress {
                     
            }
      
+
+        
+        
+       public double getRLESize()
+        {
+            File fi ;
+            fi = new File(outputFile);
+            System.out.println("rle  "+fi.length());
+            return fi.length() ;
+            
+        }
+        
+        public static void compress(String fName) throws FileNotFoundException, IOException {
+           
+            String example = null ;
+            FileReader in = new FileReader(fName) ;
+            BufferedReader br = new BufferedReader(in) ;
+            while((example=br.readLine())!=null){
+                encode(example,fName);
+            }
+                     
+        }
+ 
+}
+
 /*
         public static void decode(String source) {
             StringBuffer dest = new StringBuffer();
@@ -89,26 +117,3 @@ public class RLECompress {
        
         
         */
-        
-        
-       public double getRLESize()
-        {
-            File fi ;
-            fi = new File(outputFile);
-              System.out.println("rle  "+fi.length());
-            return fi.length() ;
-            
-        }
-        
-        public static void compress(String fName) throws FileNotFoundException, IOException {
-           
-            String example = null ;
-            FileReader in = new FileReader(fName) ;
-            BufferedReader br = new BufferedReader(in) ;
-            while((example=br.readLine())!=null){
-                encode(example,fName);
-            }
-                     
-        }
- 
-}

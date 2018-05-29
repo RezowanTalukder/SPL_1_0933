@@ -1,6 +1,4 @@
-/*  Author
-    Md Rezowan Talukder
-*/
+
 
 /*
     *Huffman algorithm is implemented in this class 
@@ -9,6 +7,10 @@
 */
 
 package rez1;
+
+/*  Author
+    Md Rezowan Talukder
+*/
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -26,9 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Comparator;
-import java.util.Iterator;
-import java.util.Scanner;
-import static rez1.RLECompress.encode;
+
 
  class Node{
            int frequency;
@@ -177,19 +177,19 @@ public class HuffmanCompression {
             for(int i=0 ;i<index ;i++){
                 System.out.println("here : "+input[i]+"  "+freq[i]);
             }
-            Files.write(Paths.get(outputFile),code.toString().getBytes(), StandardOpenOption.APPEND) ;
             */
             
             
             Map<Character,String> code = huffman(input, freq);
-                     
-            outputFile = fileName+"_huffman.txt" ;
-            Iterator<Map.Entry<Character,String>>entries = code.entrySet().iterator() ;
             
-            while(entries.hasNext()){
-                Map.Entry<Character,String> entry = entries.next() ;
-                Files.write(Paths.get(outputFile),entry.getValue().toString().getBytes(), StandardOpenOption.APPEND) ;
-            }
+           // System.out.println(code);
+            
+  
+            
+            outputFile = fileName+"_huffman.txt" ;
+            
+            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputFile,true))) ;
+            Files.write(Paths.get(outputFile),code.toString().getBytes(), StandardOpenOption.APPEND) ;
         }
 
     }
